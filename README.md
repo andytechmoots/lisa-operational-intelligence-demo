@@ -160,7 +160,21 @@ They demonstrate the analytical concepts without exposing proprietary rule sets 
 
 ## Validation
 
-The current synthetic demonstration validates a deterministic 100-shipment scenario.
+### Public Repository Validation
+
+The public demonstration includes automated tests for the simplified
+routing and custody examples included in this repository.
+
+| Validation | Result |
+|---|---:|
+| Public automated tests | 5 passing |
+| Synthetic sample dataset | Included |
+| GitHub Actions CI | Passing |
+
+### Private Core Validation
+
+The private LISA implementation is tested against a deterministic
+100-shipment synthetic scenario.
 
 | Metric | Result |
 |---|---:|
@@ -173,9 +187,11 @@ The current synthetic demonstration validates a deterministic 100-shipment scena
 | High-confidence custody decisions | 95 |
 | Medium-confidence custody decisions | 5 |
 | Missing custody classifications | 0 |
-| Automated regression tests in private core | 11 passing |
+| Private-core automated tests | 11 passing |
 
-The private LISA core also validates logical consistency across routing, shipment lifecycle, custody, and responsibility states before the analytical layer is refreshed.
+The private core also validates logical consistency across shipment
+lifecycle, routing, custody and responsibility states before the
+analytical layer is refreshed.
 
 ## Project Background
 

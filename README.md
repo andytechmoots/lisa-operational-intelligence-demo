@@ -1,5 +1,7 @@
 # LISA — Last-Mile Operational Intelligence & Shipment Analytics
 
+[![Public Demo Tests](https://github.com/andytechmoots/lisa-operational-intelligence-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/andytechmoots/lisa-operational-intelligence-demo/actions/workflows/ci.yml)
+
 > **Public portfolio demonstration using synthetic data only.**
 
 LISA is a logistics intelligence platform designed to transform fragmented shipment tracking data into actionable operational insight.

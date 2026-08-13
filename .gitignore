@@ -1,0 +1,58 @@
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Private datasets
+data/raw/
+data/private/
+data/production/
+data/processed/
+data/exports/
+
+# Database files / backups
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.backup
+*.bak
+
+# Credentials
+credentials/
+secrets/
+*.pem
+*.key
+*.p12
+
+# Power BI working files
+*.pbix
+*.pbit
+
+# Local output
+logs/
+output/
+exports/
+
+# Temporary/archive files
+*.zip
+*.7z
+*.tar
+*.gz
+
+# Explicitly allow synthetic public samples
+!data/synthetic/
+!data/synthetic/**

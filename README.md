@@ -1,8 +1,23 @@
 # LISA — Last-Mile Operational Intelligence & Shipment Analytics
 
 [![Public Demo Tests](https://github.com/andytechmoots/lisa-operational-intelligence-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/andytechmoots/lisa-operational-intelligence-demo/actions/workflows/ci.yml)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://lisa-logistics-intelligence-shipment-analytics.streamlit.app)
 
 > **Public portfolio demonstration using synthetic data only.**
+
+## Live Demo
+
+Explore the interactive public demonstration:
+
+**[Launch LISA Live Demo](https://lisa-logistics-intelligence-shipment-analytics.streamlit.app)**
+
+The live application uses synthetic shipment data only and demonstrates:
+
+- operations command-centre monitoring
+- searchable shipment investigation
+- routing-exception assessment
+- custody and responsibility classification
+- required operational action
 
 LISA is a logistics intelligence platform designed to transform fragmented shipment tracking data into actionable operational insight.
 
@@ -117,10 +132,10 @@ Logic
      │         │
      └────┬────┘
           ▼
-       API Layer
-          │
-          ▼
-      Power BI
+      Application Layer
+        ┌───────┴────────┐
+        ▼                ▼
+   Streamlit Demo      Power BI
 ```
 
 ## Technology Stack
@@ -145,6 +160,12 @@ Logic
 - environment-based configuration
 - deterministic synthetic demo pipeline
 - automated regression testing
+
+### Presentation & Deployment
+
+- Streamlit
+- Streamlit Community Cloud
+- GitHub Actions CI
 
 ## Public Examples
 

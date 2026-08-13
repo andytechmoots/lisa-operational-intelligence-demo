@@ -162,8 +162,7 @@ They demonstrate the analytical concepts without exposing proprietary rule sets 
 
 ### Public Repository Validation
 
-The public demonstration includes automated tests for the simplified
-routing and custody examples included in this repository.
+The public demonstration includes automated tests for the simplified routing and custody examples included in this repository.
 
 | Validation | Result |
 |---|---:|
@@ -173,8 +172,7 @@ routing and custody examples included in this repository.
 
 ### Private Core Validation
 
-The private LISA implementation is tested against a deterministic
-100-shipment synthetic scenario.
+The private LISA implementation is tested against a deterministic 100-shipment synthetic scenario.
 
 | Metric | Result |
 |---|---:|
@@ -189,9 +187,7 @@ The private LISA implementation is tested against a deterministic
 | Missing custody classifications | 0 |
 | Private-core automated tests | 11 passing |
 
-The private core also validates logical consistency across shipment
-lifecycle, routing, custody and responsibility states before the
-analytical layer is refreshed.
+The private core also validates logical consistency across shipment lifecycle, routing, custody, and responsibility states before the analytical layer is refreshed.
 
 ## Project Background
 

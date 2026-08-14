@@ -1,7 +1,10 @@
 import streamlit as st
 
 from components.data import load_shipments
-from components.ui import render_header
+from components.ui import (
+    render_feedback,
+    render_header,
+)
 
 
 shipments = load_shipments()
@@ -122,6 +125,7 @@ with left_column:
         route_counts,
         hide_index=True,
         use_container_width=True,
+        width="stretch",
     )
 
 
@@ -143,3 +147,4 @@ with right_column:
         hide_index=True,
         use_container_width=True,
     )
+render_feedback()

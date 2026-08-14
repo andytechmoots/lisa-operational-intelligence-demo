@@ -1,7 +1,10 @@
 import streamlit as st
 
 from components.data import load_shipments
-from components.ui import render_header
+from components.ui import (
+    render_feedback,
+    render_header,
+)
 
 
 shipments = load_shipments()
@@ -172,9 +175,17 @@ with col2:
 
 with st.expander("View Synthetic Shipment Evidence"):
 
-    st.dataframe(
-        shipment.to_frame(
-            name="Value"
-        ),
-        use_container_width=True,
+    evidence = (
+        shipment
+        .astype(str)
+        .to_frame(name="Value")
     )
+
+    st.dataframe(
+        evidence,
+        use_container_width=True,
+        width="stretch"
+    )
+
+
+render_feedback()

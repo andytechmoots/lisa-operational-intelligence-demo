@@ -1,7 +1,10 @@
 import streamlit as st
 
 from components.data import load_shipments
-from components.ui import render_header
+from components.ui import (
+    render_feedback,
+    render_header,
+)
 from examples.custody_example import classify_demo_custody
 
 
@@ -220,3 +223,5 @@ with st.expander(
         evidence-based custody and responsibility model.
         """
     )
+
+render_feedback()

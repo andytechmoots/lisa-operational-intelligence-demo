@@ -1,13 +1,11 @@
 import streamlit as st
 
-
 st.set_page_config(
     page_title="LISA",
     page_icon="📦",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-
 
 operations_page = st.Page(
     "pages/operations.py",
@@ -27,7 +25,6 @@ custody_page = st.Page(
     title="Custody & Responsibility",
     icon="🧭",
 )
-
 
 navigation = st.navigation(
     [

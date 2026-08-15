@@ -9,44 +9,145 @@ from components.ui import (
 
 shipments = load_shipments()
 
-render_header(
-    "LISA — Shipment & Exception Investigation",
-    "Investigate routing, operational state and required intervention.",
+
+# ---------------------------------------------------------
+# Available shipments
+# ---------------------------------------------------------
+
+waybills = (
+    shipments["waybill"]
+    .astype(str)
+    .tolist()
 )
 
 
 # ---------------------------------------------------------
-# Shipment search
+# Cross-page state
+# ---------------------------------------------------------
+
+selected_waybill = st.session_state.get(
+    "selected_waybill"
+)
+
+
+if "_investigation_waybill" not in st.session_state:
+
+    if selected_waybill in waybills:
+
+        st.session_state[
+            "_investigation_waybill"
+        ] = selected_waybill
+
+    else:
+
+        st.session_state[
+            "_investigation_waybill"
+        ] = None
+
+
+# ---------------------------------------------------------
+# Header
+# ---------------------------------------------------------
+
+render_header(
+    "LISA — Shipment Investigation",
+    (
+        "Step 2 — Understand what happened "
+        "and why this shipment needs attention."
+    ),
+)
+
+
+st.markdown(
+    """
+    **1. Spot what matters** ✅
+    &nbsp;&nbsp;→&nbsp;&nbsp;
+    **2. Investigate** 🔎
+    &nbsp;&nbsp;→&nbsp;&nbsp;
+    **3. Identify responsibility**
+    &nbsp;&nbsp;→&nbsp;&nbsp;
+    **4. Decide the next action**
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# ---------------------------------------------------------
+# Explain guided example versus exploration
+# ---------------------------------------------------------
+
+st.info(
+    (
+        "**Guided example:** SYN0002 demonstrates a routing exception. "
+        "You can select any synthetic shipment below to explore how "
+        "LISA responds to different operational situations."
+    ),
+    icon="💡",
+)
+
+
+# ---------------------------------------------------------
+# Shipment selection
 # ---------------------------------------------------------
 
 waybill = st.selectbox(
-    "Search Shipment / Waybill",
-    options=shipments["waybill"].tolist(),
+    "Explore Shipment / Waybill",
+    options=waybills,
     index=None,
-    placeholder="Select or type a waybill...",
+    placeholder="Choose or type a synthetic waybill...",
+    key="_investigation_waybill",
 )
 
+
 if waybill is not None:
-    st.session_state["selected_waybill"] = waybill
+
+    st.session_state[
+        "selected_waybill"
+    ] = waybill
 
 
 if waybill is None:
+
     st.info(
-        "Search for a synthetic waybill to begin an investigation."
+        (
+            "Choose a synthetic shipment to begin. "
+            "For the guided workflow, start with SYN0002."
+        )
     )
+
+    render_feedback()
+
     st.stop()
 
 
-shipment = (
-    shipments.loc[
-        shipments["waybill"] == waybill
-    ]
-    .iloc[0]
-)
+# ---------------------------------------------------------
+# Retrieve shipment
+# ---------------------------------------------------------
+
+shipment_rows = shipments.loc[
+    shipments["waybill"] == waybill
+]
+
+
+if shipment_rows.empty:
+
+    st.error(
+        (
+            f"Shipment {waybill} could not be found "
+            "in the synthetic dataset."
+        )
+    )
+
+    render_feedback()
+
+    st.stop()
+
+
+shipment = shipment_rows.iloc[0]
 
 
 # ---------------------------------------------------------
-# Derive simplified public-demo assessment
+# Routing assessment
 # ---------------------------------------------------------
 
 is_route_exception = (
@@ -54,44 +155,78 @@ is_route_exception = (
     == "ROUTE_EXCEPTION"
 )
 
+
 if is_route_exception:
-    routing_diagnosis = "Routing Exception"
-    required_action = "Review Routing"
+
+    routing_diagnosis = (
+        "Routing Exception"
+    )
+
+    required_action = (
+        "Review Routing"
+    )
+
+
 else:
-    routing_diagnosis = "Expected Route"
-    required_action = "No Routing Action"
+
+    routing_diagnosis = (
+        "Expected Route"
+    )
+
+    required_action = (
+        "No Routing Action"
+    )
 
 
 # ---------------------------------------------------------
 # Shipment overview
 # ---------------------------------------------------------
 
-st.subheader("Shipment Overview")
+st.subheader(
+    "Shipment Overview"
+)
 
-col1, col2, col3, col4 = st.columns(4)
 
-with col1:
+overview_1, overview_2, overview_3, overview_4 = (
+    st.columns(4)
+)
+
+
+with overview_1:
+
     st.metric(
         "Waybill",
         shipment["waybill"],
     )
 
-with col2:
+
+with overview_2:
+
     st.metric(
         "Destination",
         shipment["destination"],
     )
 
-with col3:
+
+with overview_3:
+
     st.metric(
         "Operational Status",
-        shipment["status"].replace("_", " ").title(),
+        shipment["status"]
+        .replace("_", " ")
+        .title(),
     )
 
-with col4:
+
+with overview_4:
+
     st.metric(
         "Delivery Days",
-        int(shipment["delivery_days"]),
+        int(
+            shipment[
+                "delivery_days"
+            ]
+        ),
     )
 
 
@@ -99,27 +234,63 @@ with col4:
 # Routing assessment
 # ---------------------------------------------------------
 
-st.subheader("Routing Assessment")
+st.subheader(
+    "What happened?"
+)
 
-col1, col2, col3 = st.columns(3)
 
-with col1:
-    st.metric(
-        "Expected Hub",
-        shipment["expected_hub"],
+expected_column, arrow_column, observed_column = (
+    st.columns(
+        [
+            1,
+            0.20,
+            1,
+        ]
+    )
+)
+
+
+with expected_column:
+
+    with st.container(
+        border=True
+    ):
+
+        st.caption(
+            "EXPECTED LOCATION"
+        )
+
+        st.markdown(
+            f"## {shipment['expected_hub']}"
+        )
+
+
+with arrow_column:
+
+    st.markdown(
+        (
+            "<h2 style='"
+            "text-align:center;"
+            "padding-top:20px;"
+            "'>→</h2>"
+        ),
+        unsafe_allow_html=True,
     )
 
-with col2:
-    st.metric(
-        "Observed Hub",
-        shipment["observed_hub"],
-    )
 
-with col3:
-    st.metric(
-        "Routing Outcome",
-        routing_diagnosis,
-    )
+with observed_column:
+
+    with st.container(
+        border=True
+    ):
+
+        st.caption(
+            "OBSERVED LOCATION"
+        )
+
+        st.markdown(
+            f"## {shipment['observed_hub']}"
+        )
 
 
 # ---------------------------------------------------------
@@ -131,61 +302,149 @@ if is_route_exception:
     st.error(
         (
             f"{waybill} was expected at "
-            f"{shipment['expected_hub']} but was observed at "
-            f"{shipment['observed_hub']}."
+            f"{shipment['expected_hub']} "
+            f"but was observed at "
+            f"{shipment['observed_hub']}. "
+            "This shipment requires operational review."
         ),
         icon="⚠️",
     )
+
 
 else:
 
     st.success(
         (
             f"{waybill} was observed at its expected "
-            f"routing location ({shipment['expected_hub']})."
+            f"routing location "
+            f"({shipment['expected_hub']})."
         ),
         icon="✅",
     )
 
 
 # ---------------------------------------------------------
-# Responsibility / action
+# Operational assessment
 # ---------------------------------------------------------
 
-st.subheader("Operational Assessment")
+st.subheader(
+    "What does LISA conclude?"
+)
 
-col1, col2 = st.columns(2)
 
-with col1:
+assessment_1, assessment_2 = (
+    st.columns(2)
+)
+
+
+with assessment_1:
+
     st.metric(
         "Routing Diagnosis",
         routing_diagnosis,
     )
 
-with col2:
+
+with assessment_2:
+
     st.metric(
-        "Required Action",
+        "Routing Action",
         required_action,
     )
 
 
 # ---------------------------------------------------------
-# Raw synthetic evidence
+# Evidence
 # ---------------------------------------------------------
 
-with st.expander("View Synthetic Shipment Evidence"):
+with st.expander(
+    "View Synthetic Shipment Evidence"
+):
 
     evidence = (
         shipment
         .astype(str)
-        .to_frame(name="Value")
+        .to_frame(
+            name="Value"
+        )
     )
 
     st.dataframe(
         evidence,
-        use_container_width=True,
-        width="stretch"
+        width="stretch",
     )
+
+
+# ---------------------------------------------------------
+# Guided next step
+# ---------------------------------------------------------
+
+st.divider()
+
+
+st.markdown(
+    """
+    <div class="next-step-box">
+        <strong>
+            Next question → Who owns this shipment now?
+        </strong>
+        <br><br>
+        LISA has identified what happened.
+        Continue to determine who currently owns the issue
+        and what operational action should follow.
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+st.markdown(
+    "### Ready for the decision?"
+)
+
+
+st.write(
+    (
+        f"We understand what happened to **{waybill}**. "
+        "Now determine **who owns the issue and what "
+        "should happen next.**"
+    )
+)
+
+
+if st.button(
+    (
+        f"🎯 IDENTIFY RESPONSIBILITY & "
+        f"NEXT ACTION — {waybill} →"
+    ),
+    type="primary",
+    width="stretch",
+):
+
+    st.session_state[
+        "selected_waybill"
+    ] = waybill
+
+    st.session_state[
+        "_custody_waybill"
+    ] = waybill
+
+    st.switch_page(
+        "pages/custody.py"
+    )
+
+
+# ---------------------------------------------------------
+# Exploration guidance
+# ---------------------------------------------------------
+
+st.caption(
+    (
+        "Want to test a different situation? "
+        "Use the shipment selector at the top of this page "
+        "to investigate any other synthetic waybill."
+    )
+)
 
 
 render_feedback()
